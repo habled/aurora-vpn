@@ -231,15 +231,9 @@
                 return;
             }
 
-            log('Closing WebApp in 1500ms...', 'info');
-            // Delay close so the user has time to see the log
-            setTimeout(function () {
-                try {
-                    tg.close();
-                } catch (e) {
-                    log('tg.close() error: ' + e.message, 'err');
-                }
-            }, 1500);
+            log('NOT closing WebApp — please close manually with the X button', 'info');
+               button.disabled = false;
+               button.textContent = 'Закрыть и получить ответ';
         });
     </script>
 </body>
