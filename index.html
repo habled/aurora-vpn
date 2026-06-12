@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#F1EFEA">
+    <title>Aurora — Private Access</title>
+
+    <!-- Telegram WebApp SDK: gives us window.Telegram.WebApp with sendData() etc. -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Typography:
+         Instrument Serif (italic) — display face with personality, less worn out
+         than the usual Playfair/Cormorant default.
+         Geist + Geist Mono — modern, quiet sans for body and small utility labels.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&display=swap">
+
+    <style>
+        /* =========================================================
+           Design tokens
+           ========================================================= */
+        :root {
+            --paper:    #F1EFEA;   /* background — warm paper, cooler than cream */
+            --ink:      #1B1A16;   /* primary text — deep warm black */
+            --muted:    #8C8578;   /* secondary text — soft warm grey */
+            --hairline: rgba(27, 26, 22, 0.12);
+            --accent:   #7D8E81;   /* muted sage — used very sparingly */
+
+            --space-xs: 8px;
+            --space-s:  16px;
+            --space-m:  24px;
+            --space-l:  40px;
+            --space-xl: 72px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            font-size: 15px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: var(--space-xl) var(--space-m);
+            position: relative;
+        }
+
+        /* Signature element:
+           a vertical hairline down the left side of the page, like a printer's
+           margin rule. It's the one bit of "decoration" — everything else stays
+           quiet around it. */
+        body::before {
+            content: '';
+            position: fixed;
+            top: var(--space-l);
+            bottom: var(--space-l);
+            left: var(--space-m);
+            width: 1px;
+            background: var(--hairline);
+            pointer-events: none;
+        }
+
+        /* =========================================================
+           Layout
+           ========================================================= */
+        .stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Stagger-in animation, one orchestrated moment instead of many small ones. */
+        .reveal {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: reveal 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        }
+        .reveal-1 { animation-delay: 0.05s; }
+        .reveal-2 { animation-delay: 0.20s; }
+        .reveal-3 { animation-delay: 0.40s; }
+        .reveal-4 { animation-delay: 0.60s; }
+        .reveal-5 { animation-delay: 0.80s; }
+
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { animation: none; opacity: 1; transform: none; }
+        }
+
+        /* =========================================================
+           Typography blocks
+           ========================================================= */
+        .eyebrow {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: var(--space-l);
+        }
+
+        .eyebrow .dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            vertical-align: middle;
+            margin: 0 10px 2px;
+        }
+
+        h1.title {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(44px, 11vw, 64px);
+            line-height: 1.02;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: var(--space-s);
+        }
+
+        .tagline {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: 18px;
+            color: var(--muted);
+            margin-bottom: var(--space-xl);
+        }
+
+        .hairline {
+            width: 1px;
+            height: 56px;
+            background: var(--hairline);
+            margin: 0 auto var(--space-l);
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 320px;
+            margin: 0 auto var(--space-l);
+        }
+
+        /* =========================================================
+           Call to action
+           ========================================================= */
+        .cta {
+            appearance: none;
+            border: none;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            padding: 18px 44px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            min-width: 240px;
+        }
+
+        .cta:hover,
+        .cta:focus-visible {
+            opacity: 0.88;
+            outline: none;
+        }
+
+        .cta:focus-visible {
+            box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--accent);
+        }
+
+        .cta:active {
+            transform: scale(0.98);
+        }
+
+        .cta[disabled] {
+            opacity: 0.4;
+            cursor: progress;
+            transform: none;
+        }
+
+        /* =========================================================
+           Footer mark
+           ========================================================= */
+        footer {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: center;
+            padding-top: var(--space-l);
+        }
+
+        footer .sep {
+            margin: 0 8px;
+            color: var(--hairline);
+        }
+    </style>
+</head>
+<body>
+
+    <main class="stage">
+        <div class="eyebrow reveal reveal-1">
+            Aurora <span class="dot"></span> Private access
+        </div>
+
+        <h1 class="title reveal reveal-2">
+            Ваш ключ<br>к свободному интернету
+        </h1>
+
+        <p class="tagline reveal reveal-3">— a quiet door beyond borders —</p>
+
+        <div class="hairline reveal reveal-3"></div>
+
+        <p class="description reveal reveal-4">
+            Каждый код выдаётся один раз и&nbsp;активируется немедленно.
+            Нажмите ниже, чтобы получить свой.
+        </p>
+
+        <button class="cta reveal reveal-5" id="get-code-button" type="button">
+            Получить код
+        </button>
+    </main>
+
+    <footer class="reveal reveal-5">
+        Aurora <span class="sep">·</span> Est. MMXXVI
+    </footer>
+
+    <script>
+        /*
+         * Bridge between the WebApp UI and the Telegram bot.
+         * When the user taps the CTA we:
+         *   1. disable the button (so they can't double-tap),
+         *   2. send a small payload back to the bot via tg.sendData,
+         *   3. close the WebApp — Telegram returns the user to the chat
+         *      where the bot will respond with their code.
+         */
+        (function () {
+            const tg = window.Telegram && window.Telegram.WebApp;
+            if (!tg) {
+                console.warn('Not running inside Telegram WebApp');
+                return;
+            }
+
+            tg.ready();
+            tg.expand();
+
+            // Match the Telegram chrome to the page so the seams disappear.
+            try { tg.setHeaderColor('#F1EFEA'); } catch (_) {}
+            try { tg.setBackgroundColor('#F1EFEA'); } catch (_) {}
+
+            const button = document.getElementById('get-code-button');
+
+            button.addEventListener('click', function () {
+                button.disabled = true;
+                button.textContent = 'Отправляем…';
+
+                try {
+                    tg.sendData(JSON.stringify({ action: 'request_code' }));
+                } catch (err) {
+                    button.disabled = false;
+                    button.textContent = 'Получить код';
+                    return;
+                }
+
+                // Small delay so sendData actually transmits before close().
+                setTimeout(function () { tg.close(); }, 250);
+            });
+        })();
+    </script>
+</body>
+</html>
