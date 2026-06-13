@@ -3,237 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#F1EFEA">
-    <title>Aurora — Debug</title>
+    <meta name="theme-color" content="#F1E8DB">
+    <title>Aurora — Private Access</title>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&display=swap">
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 
     <style>
         :root {
-            --paper:    #F1EFEA;
-            --ink:      #1B1A16;
-            --muted:    #8C8578;
-            --hairline: rgba(27, 26, 22, 0.12);
-            --accent:   #7D8E81;
-            --error:    #B85842;
-            --ok:       #5E7A5E;
+            --bg-top:    #F1E8DB;
+            --bg-bottom: #FBF6EE;
+            --surface:   #FFFFFF;
+            --surface-tinted: rgba(255, 255, 255, 0.55);
+            --ink:       #1F1B17;
+            --ink-soft:  #3A3027;
+            --muted:     #8D8579;
+            --soft:      rgba(31, 27, 23, 0.06);
+            --hairline:  rgba(31, 27, 23, 0.09);
+            --shadow:    rgba(94, 80, 64, 0.10);
+            --accent:    #C9A87C;
+            --locked:    rgba(31, 27, 23, 0.32);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            height: 100%;
-            background: var(--paper);
-            color: var(--ink);
+            min-height: 100vh;
             font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 300;
-            font-size: 15px;
-            line-height: 1.6;
+            font-weight: 400;
+            color: var(--ink);
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%, var(--bg-bottom) 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 32px 24px;
-        }
-
-        .stage {
-            flex: 1;
+            padding: 28px 18px 32px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            max-width: 480px;
-            margin: 0 auto;
-            width: 100%;
         }
 
-        .eyebrow {
+        /* ---------------- Hero ---------------- */
+        .hero {
+            text-align: center;
+            padding: 36px 0 28px;
+        }
+
+        .hero-eyebrow {
             font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 11px;
-            font-weight: 400;
+            font-size: 10px;
+            font-weight: 500;
             letter-spacing: 0.32em;
             text-transform: uppercase;
             color: var(--muted);
-            margin-bottom: 32px;
+            margin-bottom: 18px;
         }
 
-        .eyebrow .dot {
+        .hero-eyebrow .dot {
             display: inline-block;
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
             background: var(--accent);
             border-radius: 50%;
             vertical-align: middle;
-            margin: 0 10px 2px;
+            margin: 0 8px 2px;
         }
 
-        h1.title {
+        .hero-title {
             font-family: 'Instrument Serif', Georgia, serif;
             font-style: italic;
             font-weight: 400;
-            font-size: clamp(40px, 10vw, 56px);
-            line-height: 1.05;
-            letter-spacing: -0.01em;
-            margin-bottom: 16px;
+            font-size: clamp(54px, 16vw, 76px);
+            line-height: 0.95;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+            margin-bottom: 14px;
         }
 
-        .tagline {
+        .hero-title .mark {
+            font-style: normal;
+            color: var(--accent);
+            font-size: 0.45em;
+            vertical-align: 0.65em;
+            margin-left: 2px;
+            font-family: 'Geist', sans-serif;
+            font-weight: 300;
+        }
+
+        .hero-tagline {
             font-family: 'Instrument Serif', Georgia, serif;
             font-style: italic;
-            font-size: 18px;
-            color: var(--muted);
-            margin-bottom: 40px;
-        }
-
-        .description {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--muted);
-            max-width: 320px;
-            margin: 0 auto 32px;
-        }
-
-        .cta {
-            appearance: none;
-            border: none;
-            background: var(--ink);
-            color: var(--paper);
-            font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 12px;
             font-weight: 400;
-            letter-spacing: 0.28em;
-            text-transform: uppercase;
-            padding: 18px 44px;
-            border-radius: 999px;
-            cursor: pointer;
-            min-width: 240px;
+            font-size: 17px;
+            color: var(--muted);
+            line-height: 1.3;
         }
 
-        .cta:active { transform: scale(0.98); }
-        .cta[disabled] { opacity: 0.5; cursor: progress; }
+        /* ---------------- Stat chips ---------------- */
+        .chips {
+            display: flex;
+            gap: 7px;
+            justify-content: center;
+            margin-bottom: 26px;
+            flex-wrap: wrap;
+        }
 
-        /* DEBUG console — only visible on this debug version */
-        .debug-log {
-            margin-top: 40px;
-            width: 100%;
-            max-width: 480px;
-            background: rgba(0,0,0,0.04);
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-tinted);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--hairline);
-            border-radius: 8px;
+            color: var(--ink);
+            padding: 9px 13px;
+            border-radius: 999px;
+            font-family: 'Geist', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .chip:active { transform: scale(0.96); }
+
+        .chip-glyph {
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1;
+        }
+
+        .chip-text {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 10.5px;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+        }
+
+        /* ---------------- Service cards ---------------- */
+        .cards {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            border-radius: 18px;
             padding: 14px 16px;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 1px 0 var(--soft), 0 10px 28px -18px var(--shadow);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            text-align: left;
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
+            color: inherit;
+            width: 100%;
+        }
+
+        .card[disabled] {
+            cursor: not-allowed;
+            box-shadow: none;
+            background: var(--surface-tinted);
+        }
+
+        .card:not([disabled]):active {
+            transform: scale(0.985);
+            box-shadow: 0 1px 0 var(--soft), 0 4px 14px -10px var(--shadow);
+        }
+
+        .card-icon {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .card-icon.primary {
+            background: linear-gradient(135deg, #1F1B17 0%, #3A3027 100%);
+            color: #F1E8DB;
+        }
+
+        .card-icon.locked {
+            background: var(--soft);
+            color: var(--locked);
+        }
+
+        .card-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 15.5px;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 2px;
+            letter-spacing: -0.005em;
+        }
+
+        .card[disabled] .card-title { color: var(--locked); }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.35;
+        }
+
+        .card-arrow {
+            color: var(--muted);
+            font-size: 20px;
+            font-weight: 300;
+            margin-left: 4px;
+            opacity: 0.55;
+            font-family: 'Geist', sans-serif;
+        }
+
+        .card-badge {
+            background: var(--soft);
+            color: var(--muted);
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-left: 4px;
+            flex-shrink: 0;
+        }
+
+        /* ---------------- Utility row ---------------- */
+        .utility {
+            margin-top: auto;
+            display: flex;
+            gap: 7px;
+            justify-content: center;
+            padding-top: 20px;
+        }
+
+        .util-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            color: var(--ink);
+            padding: 9px 15px;
+            border-radius: 999px;
             font-family: 'Geist Mono', ui-monospace, monospace;
             font-size: 11px;
-            line-height: 1.55;
-            text-align: left;
-            color: var(--ink);
-            min-height: 80px;
-            white-space: pre-wrap;
-            word-break: break-word;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.18s ease;
         }
 
-        .debug-log .line { display: block; }
-        .debug-log .line.ok    { color: var(--ok); }
-        .debug-log .line.err   { color: var(--error); }
-        .debug-log .line.info  { color: var(--muted); }
+        .util-btn:active { transform: scale(0.96); }
+
+        /* ---------------- Reveal animation ---------------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(6px);
+            animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        }
+        .reveal-1 { animation-delay: 0.05s; }
+        .reveal-2 { animation-delay: 0.15s; }
+        .reveal-3 { animation-delay: 0.30s; }
+        .reveal-4 { animation-delay: 0.40s; }
+        .reveal-5 { animation-delay: 0.50s; }
+
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { animation: none; opacity: 1; transform: none; }
+        }
+
+        /* ---------------- Toast ---------------- */
+        .toast {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            bottom: 24px;
+            background: var(--ink);
+            color: var(--bg-top);
+            padding: 13px 18px;
+            border-radius: 14px;
+            font-size: 13.5px;
+            line-height: 1.4;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 100;
+            box-shadow: 0 10px 30px -10px var(--shadow);
+        }
+
+        .toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
 
-    <main class="stage">
-        <div class="eyebrow">Aurora <span class="dot"></span> Debug Mode</div>
-        <h1 class="title">Диагностика</h1>
-        <p class="tagline">— проверяем sendData —</p>
-        <p class="description">
-            Нажми кнопку и наблюдай за журналом ниже.
-            Все этапы покажутся прямо на экране.
-        </p>
-        <button class="cta" id="get-code-button" type="button">Получить код</button>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-eyebrow reveal reveal-1">
+            Aurora <span class="dot"></span> Private access
+        </div>
+        <h1 class="hero-title reveal reveal-2">
+            Aurora<span class="mark">✦</span>
+        </h1>
+        <p class="hero-tagline reveal reveal-2">— ваш ключ к свободному интернету —</p>
+    </section>
 
-        <div class="debug-log" id="debug-log"></div>
-    </main>
+    <!-- STAT CHIPS -->
+    <div class="chips reveal reveal-3">
+        <button class="chip" type="button" data-action="info">
+            <span class="chip-glyph">◇</span>
+            <span class="chip-text">Доступ</span>
+        </button>
+        <button class="chip" type="button" data-action="cooldown">
+            <span class="chip-glyph">⌛</span>
+            <span class="chip-text">24ч</span>
+        </button>
+        <button class="chip" type="button" data-action="share">
+            <span class="chip-glyph">↗</span>
+            <span class="chip-text">Реф</span>
+        </button>
+        <button class="chip" type="button" data-action="faq">
+            <span class="chip-glyph">?</span>
+            <span class="chip-text">FAQ</span>
+        </button>
+    </div>
+
+    <!-- SERVICE CARDS -->
+    <div class="cards">
+        <button class="card reveal reveal-4" type="button" data-action="get_code">
+            <div class="card-icon primary">A</div>
+            <div class="card-body">
+                <div class="card-title">Aurora Access</div>
+                <div class="card-subtitle">Получить персональный код</div>
+            </div>
+            <span class="card-arrow">›</span>
+        </button>
+
+        <button class="card reveal reveal-4" type="button" disabled>
+            <div class="card-icon locked">P</div>
+            <div class="card-body">
+                <div class="card-title">Aurora Pro</div>
+                <div class="card-subtitle">Премиум-доступ и приоритет</div>
+            </div>
+            <span class="card-badge">Скоро</span>
+        </button>
+
+        <button class="card reveal reveal-5" type="button" disabled>
+            <div class="card-icon locked">N</div>
+            <div class="card-body">
+                <div class="card-title">Aurora Atlas</div>
+                <div class="card-subtitle">Карта стран и серверов</div>
+            </div>
+            <span class="card-badge">Скоро</span>
+        </button>
+    </div>
+
+    <!-- UTILITY ROW -->
+    <div class="utility reveal reveal-5">
+        <button class="util-btn" type="button" data-action="faq">FAQ</button>
+        <button class="util-btn" type="button" data-action="channel">Канал</button>
+        <button class="util-btn" type="button" data-action="support">Чат</button>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        const logEl = document.getElementById('debug-log');
+        /*
+         * Bridge between WebApp UI and the Telegram bot.
+         * Uses tg.openTelegramLink('t.me/bot?start=PARAM') to reliably trigger
+         * bot actions, bypassing the sendData issue on some iOS clients.
+         */
 
-        function log(text, level) {
-            const line = document.createElement('span');
-            line.className = 'line ' + (level || 'info');
-            const stamp = new Date().toLocaleTimeString();
-            line.textContent = '[' + stamp + '] ' + text;
-            logEl.appendChild(line);
-        }
-
-        // Catch any unhandled JS error and show it
-        window.addEventListener('error', function (e) {
-            log('JS error: ' + (e.message || e) + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'), 'err');
-        });
-
-        log('Page loaded', 'info');
+        const BOT_USERNAME = 'aurora_vpn_access_bot';
 
         const tg = window.Telegram && window.Telegram.WebApp;
+        const toastEl = document.getElementById('toast');
+        let toastTimer = null;
 
-        if (!tg) {
-            log('window.Telegram.WebApp is MISSING — script not loaded?', 'err');
-        } else {
-            log('Telegram.WebApp object found', 'ok');
-            try {
-                tg.ready();
-                log('tg.ready() called', 'ok');
-            } catch (e) {
-                log('tg.ready() error: ' + e.message, 'err');
-            }
-            try {
-                tg.expand();
-                log('tg.expand() called', 'ok');
-            } catch (e) {
-                log('tg.expand() error: ' + e.message, 'err');
-            }
-            log('Platform: ' + (tg.platform || 'unknown'), 'info');
-            log('Version: ' + (tg.version || 'unknown'), 'info');
-            log('initData length: ' + ((tg.initData || '').length), 'info');
+        function showToast(text, durationMs) {
+            toastEl.textContent = text;
+            toastEl.classList.add('visible');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toastEl.classList.remove('visible');
+            }, durationMs || 2400);
         }
 
-        const button = document.getElementById('get-code-button');
+        if (tg) {
+            try { tg.ready(); } catch (_) {}
+            try { tg.expand(); } catch (_) {}
+            try { tg.setHeaderColor('#F1E8DB'); } catch (_) {}
+            try { tg.setBackgroundColor('#F1E8DB'); } catch (_) {}
+        }
 
-        button.addEventListener('click', function () {
-            log('Button clicked', 'info');
-
-            if (!tg) {
-                log('Cannot send: no Telegram.WebApp', 'err');
-                return;
+        function openBotWithParam(startParam) {
+            const url = 'https://t.me/' + BOT_USERNAME + '?start=' + encodeURIComponent(startParam);
+            if (tg && typeof tg.openTelegramLink === 'function') {
+                tg.openTelegramLink(url);
+            } else {
+                window.open(url, '_blank');
             }
-            if (typeof tg.sendData !== 'function') {
-                log('Cannot send: tg.sendData is not a function', 'err');
-                return;
+        }
+
+        const actions = {
+            get_code: function () {
+                if (tg && typeof tg.sendData === 'function') {
+                    try { tg.sendData(JSON.stringify({ action: 'request_code' })); } catch (_) {}
+                }
+                openBotWithParam('code');
+            },
+            info: function () {
+                showToast('Один уникальный код на каждого пользователя.');
+            },
+            cooldown: function () {
+                showToast('Один код раз в 24 часа.');
+            },
+            share: function () {
+                const link = 'https://t.me/' + BOT_USERNAME;
+                if (tg && typeof tg.openTelegramLink === 'function') {
+                    tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link));
+                } else {
+                    showToast('t.me/' + BOT_USERNAME);
+                }
+            },
+            faq: function () {
+                openBotWithParam('faq');
+            },
+            channel: function () {
+                showToast('Канал скоро будет.');
+            },
+            support: function () {
+                openBotWithParam('support');
             }
+        };
 
-            button.disabled = true;
-            button.textContent = 'Отправляем…';
-
-            try {
-                const payload = JSON.stringify({ action: 'request_code' });
-                log('Calling tg.sendData("' + payload + '")', 'info');
-                tg.sendData(payload);
-                log('tg.sendData() returned without error', 'ok');
-            } catch (e) {
-                log('tg.sendData() threw: ' + (e.message || e), 'err');
-                button.disabled = false;
-                button.textContent = 'Получить код';
-                return;
-            }
-
-            log('NOT closing WebApp — please close manually with the X button', 'info');
-               button.disabled = false;
-               button.textContent = 'Закрыть и получить ответ';
+        document.querySelectorAll('[data-action]').forEach(function (el) {
+            el.addEventListener('click', function () {
+                const action = el.getAttribute('data-action');
+                const fn = actions[action];
+                if (fn) fn();
+            });
         });
     </script>
 </body>
