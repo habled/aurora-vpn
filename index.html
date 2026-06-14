@@ -3,72 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#F1E8DB">
-    <title>Aurora — Private Access</title>
+    <meta name="theme-color" content="#F4EFE7">
+    <title>aurora vpn</title>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap">
 
     <style>
         :root {
-            --bg-top:    #F1E8DB;
-            --bg-bottom: #FBF6EE;
-            --surface:   #FFFFFF;
-            --surface-tinted: rgba(255, 255, 255, 0.55);
-            --ink:       #1F1B17;
-            --ink-soft:  #3A3027;
-            --muted:     #8D8579;
-            --soft:      rgba(31, 27, 23, 0.06);
-            --hairline:  rgba(31, 27, 23, 0.09);
-            --shadow:    rgba(94, 80, 64, 0.10);
-            --accent:    #C9A87C;
-            --locked:    rgba(31, 27, 23, 0.32);
+            /* Warm paper palette */
+            --bg-top:    #F4EFE7;
+            --bg-bot:    #FBF7F0;
+
+            --surface:        #FFFFFF;
+            --surface-tinted: rgba(255, 255, 255, 0.65);
+            --surface-soft:   #F8F4EC;
+            --surface-locked: rgba(255, 255, 255, 0.38);
+
+            --ink:        #1C1A17;
+            --ink-body:   #5A554E;
+            --muted:      #9C968A;
+
+            --hairline:       rgba(28, 26, 23, 0.08);
+            --hairline-bold:  rgba(28, 26, 23, 0.16);
+            --shadow:         rgba(94, 80, 64, 0.08);
+            --soft:           rgba(28, 26, 23, 0.05);
+
+            /* Single quiet accent */
+            --accent:      #8F7E6A;
+            --accent-soft: rgba(143, 126, 106, 0.14);
+
+            --locked: rgba(28, 26, 23, 0.32);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
             min-height: 100vh;
-            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             font-weight: 400;
+            font-size: 15px;
             color: var(--ink);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 100%);
+            background-attachment: fixed;
+            letter-spacing: -0.005em;
         }
 
         body {
-            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%, var(--bg-bottom) 100%);
-            background-attachment: fixed;
             min-height: 100vh;
-            padding: 28px 18px 32px;
             display: flex;
             flex-direction: column;
         }
 
-        /* ---------------- Hero ---------------- */
+        /* ============================================================ BRAND STRIP */
+        .brand-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px 6px;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+        }
+
+        .brand-strip .wordmark {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+        }
+
+        .brand-strip .wordmark .ornament {
+            color: var(--accent);
+            font-weight: 400;
+            margin: 0 4px;
+        }
+
+        /* ============================================================ SCREEN */
+        .app { flex: 1; display: flex; flex-direction: column; }
+
+        .screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0 22px 36px;
+            animation: screen-fade 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+
+        .screen[hidden] { display: none; }
+
+        @keyframes screen-fade {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================ HERO */
         .hero {
-            text-align: center;
-            padding: 36px 0 28px;
+            text-align: left;
+            padding: 56px 0 36px;
         }
 
         .hero-eyebrow {
-            font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.32em;
-            text-transform: uppercase;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.05em;
             color: var(--muted);
-            margin-bottom: 18px;
+            margin-bottom: 22px;
         }
 
         .hero-eyebrow .dot {
             display: inline-block;
-            width: 3px;
-            height: 3px;
+            width: 4px;
+            height: 4px;
             background: var(--accent);
             border-radius: 50%;
             vertical-align: middle;
@@ -76,246 +130,593 @@
         }
 
         .hero-title {
-            font-family: 'Instrument Serif', Georgia, serif;
-            font-style: italic;
-            font-weight: 400;
-            font-size: clamp(54px, 16vw, 76px);
-            line-height: 0.95;
-            letter-spacing: -0.025em;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: clamp(40px, 11.5vw, 56px);
+            line-height: 1.0;
+            letter-spacing: -0.035em;
             color: var(--ink);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
-        .hero-title .mark {
-            font-style: normal;
-            color: var(--accent);
-            font-size: 0.45em;
-            vertical-align: 0.65em;
-            margin-left: 2px;
-            font-family: 'Geist', sans-serif;
-            font-weight: 300;
+        .hero-name {
+            font-size: 16px;
+            color: var(--ink-body);
+            line-height: 1.4;
+            max-width: 320px;
         }
 
-        .hero-tagline {
-            font-family: 'Instrument Serif', Georgia, serif;
-            font-style: italic;
-            font-weight: 400;
-            font-size: 17px;
-            color: var(--muted);
-            line-height: 1.3;
+        .hero-name b {
+            font-weight: 500;
+            color: var(--ink);
         }
 
-        /* ---------------- Stat chips ---------------- */
+        /* ============================================================ CHIPS */
         .chips {
             display: flex;
             gap: 7px;
-            justify-content: center;
-            margin-bottom: 26px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
         }
 
         .chip {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             background: var(--surface-tinted);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--hairline);
             color: var(--ink);
-            padding: 9px 13px;
+            padding: 10px 14px;
             border-radius: 999px;
-            font-family: 'Geist', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             font-weight: 500;
+            font-size: 13px;
             cursor: pointer;
-            transition: transform 0.18s ease, background 0.18s ease;
+            transition: transform 0.18s ease;
             -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.005em;
         }
 
         .chip:active { transform: scale(0.96); }
 
         .chip-glyph {
-            font-size: 13px;
-            color: var(--ink-soft);
-            line-height: 1;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 500;
         }
 
-        .chip-text {
-            font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 10.5px;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-        }
-
-        /* ---------------- Service cards ---------------- */
+        /* ============================================================ TIER CARDS */
         .cards {
             display: flex;
             flex-direction: column;
-            gap: 9px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 28px;
         }
 
         .card {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 14px;
             background: var(--surface);
             border: 1px solid var(--hairline);
-            border-radius: 18px;
-            padding: 14px 16px;
+            border-radius: 20px;
+            padding: 16px 18px;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 1px 0 var(--soft), 0 10px 28px -18px var(--shadow);
+            box-shadow: 0 1px 0 var(--soft), 0 14px 32px -22px var(--shadow);
             transition: transform 0.18s ease, box-shadow 0.18s ease;
             text-align: left;
             -webkit-tap-highlight-color: transparent;
             font-family: inherit;
             color: inherit;
             width: 100%;
+            overflow: hidden;
+        }
+
+        /* Small tier number in the top-right corner — magazine page mark */
+        .card-tier-mark {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            opacity: 0.7;
+        }
+
+        .card:not([disabled]):active {
+            transform: scale(0.987);
+            box-shadow: 0 1px 0 var(--soft), 0 4px 14px -10px var(--shadow);
         }
 
         .card[disabled] {
             cursor: not-allowed;
             box-shadow: none;
-            background: var(--surface-tinted);
+            background: var(--surface-locked);
         }
 
-        .card:not([disabled]):active {
-            transform: scale(0.985);
-            box-shadow: 0 1px 0 var(--soft), 0 4px 14px -10px var(--shadow);
-        }
-
+        /* The icon — solid for FREE, outlined (a 'blueprint') for locked tiers */
         .card-icon {
             flex-shrink: 0;
-            width: 44px;
-            height: 44px;
-            border-radius: 13px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Instrument Serif', Georgia, serif;
-            font-style: italic;
-            font-size: 26px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
             line-height: 1;
+            letter-spacing: -0.04em;
         }
 
         .card-icon.primary {
-            background: linear-gradient(135deg, #1F1B17 0%, #3A3027 100%);
-            color: #F1E8DB;
+            background: var(--ink);
+            color: var(--bg-top);
         }
 
-        .card-icon.locked {
-            background: var(--soft);
-            color: var(--locked);
+        .card-icon.outlined {
+            background: transparent;
+            color: var(--muted);
+            border: 1.5px solid var(--hairline-bold);
         }
 
-        .card-body {
-            flex: 1;
-            min-width: 0;
-        }
+        .card-body { flex: 1; min-width: 0; padding-right: 8px; }
 
         .card-title {
-            font-size: 15.5px;
             font-weight: 500;
+            font-size: 16px;
             color: var(--ink);
-            margin-bottom: 2px;
-            letter-spacing: -0.005em;
+            margin-bottom: 3px;
+            letter-spacing: -0.012em;
         }
 
-        .card[disabled] .card-title { color: var(--locked); }
+        .card[disabled] .card-title { color: var(--ink-body); }
 
         .card-subtitle {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--muted);
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .card-arrow {
             color: var(--muted);
-            font-size: 20px;
-            font-weight: 300;
-            margin-left: 4px;
+            font-size: 22px;
+            font-weight: 400;
+            margin-left: 6px;
             opacity: 0.55;
-            font-family: 'Geist', sans-serif;
         }
 
         .card-badge {
-            background: var(--soft);
-            color: var(--muted);
-            font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 9px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 9.5px;
             font-weight: 500;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-left: 4px;
+            letter-spacing: 0.08em;
+            padding: 5px 9px;
+            border-radius: 8px;
+            margin-left: 6px;
             flex-shrink: 0;
+            align-self: center;
         }
 
-        /* ---------------- Utility row ---------------- */
+        /* ============================================================ UTILITY */
         .utility {
             margin-top: auto;
             display: flex;
-            gap: 7px;
+            gap: 8px;
             justify-content: center;
-            padding-top: 20px;
+            padding-top: 24px;
         }
 
         .util-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
             background: var(--surface);
             border: 1px solid var(--hairline);
             color: var(--ink);
-            padding: 9px 15px;
+            padding: 10px 18px;
             border-radius: 999px;
-            font-family: 'Geist Mono', ui-monospace, monospace;
-            font-size: 11px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
             font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
             transition: transform 0.18s ease;
+            letter-spacing: -0.005em;
         }
 
         .util-btn:active { transform: scale(0.96); }
 
-        /* ---------------- Reveal animation ---------------- */
+        /* ============================================================ INNER HEADER */
+        .screen-header { padding: 28px 0 8px; }
+
+        .screen-tier {
+            display: inline-block;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 14px;
+            text-transform: lowercase;
+        }
+
+        .screen-title {
+            font-weight: 700;
+            font-size: 38px;
+            line-height: 1.0;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+
+        .screen-subtitle {
+            font-size: 14.5px;
+            color: var(--ink-body);
+            line-height: 1.55;
+            max-width: 340px;
+        }
+
+        /* ============================================================ INFO TILES */
+        .info-tiles {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 26px 0 28px;
+        }
+
+        .info-tile {
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            border-radius: 16px;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 116px;
+            text-align: left;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.18s ease;
+            color: inherit;
+            font-family: inherit;
+        }
+
+        .info-tile:active { transform: scale(0.98); }
+
+        .info-tile-step {
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            margin-bottom: auto;
+        }
+
+        .info-tile-label {
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 1.2;
+            color: var(--ink);
+            margin-top: 28px;
+            letter-spacing: -0.01em;
+        }
+
+        /* ============================================================ SECTION LABEL */
+        .section-label {
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            margin: 0 0 12px 4px;
+        }
+
+        /* ============================================================ CODE CARD (state machine) */
+        .code-card {
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            border-radius: 22px;
+            padding: 24px 22px 20px;
+            margin-bottom: 28px;
+            box-shadow: 0 1px 0 var(--soft), 0 14px 32px -22px var(--shadow);
+            transition: background 0.35s ease;
+        }
+
+        .code-card[data-state="ready"] {
+            background: linear-gradient(180deg, var(--surface) 0%, #FBF9F4 100%);
+        }
+
+        .code-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .code-status .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--muted);
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .code-card[data-state="active"] .code-status .dot,
+        .code-card[data-state="ready"]  .code-status .dot {
+            background: var(--accent);
+        }
+
+        .code-card-headline {
+            font-weight: 700;
+            font-size: 26px;
+            line-height: 1.12;
+            letter-spacing: -0.022em;
+            color: var(--ink);
+            margin-bottom: 10px;
+        }
+
+        .code-card-help {
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: var(--ink-body);
+            margin-bottom: 22px;
+        }
+
+        /* The "ticket" — appears once a code exists */
+        .code-ticket {
+            display: none;
+            background: var(--surface-soft);
+            border: 1px dashed var(--hairline-bold);
+            border-radius: 16px;
+            padding: 22px 20px;
+            margin-bottom: 16px;
+            text-align: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.2s ease, transform 0.15s ease;
+            position: relative;
+        }
+
+        .code-card[data-state="active"] .code-ticket,
+        .code-card[data-state="ready"]  .code-ticket { display: block; }
+
+        .code-ticket:active { transform: scale(0.99); background: #F1ECE3; }
+
+        .code-ticket-value {
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-weight: 500;
+            font-size: 22px;
+            letter-spacing: 0.06em;
+            color: var(--ink);
+            margin-bottom: 8px;
+            user-select: all;
+            word-break: break-all;
+        }
+
+        .code-ticket-hint {
+            font-family: 'DM Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+        }
+
+        .code-card-meta {
+            font-size: 13px;
+            color: var(--ink-body);
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* The CTA only shows in idle/empty/error states */
+        .code-card[data-state="active"] .cta-primary,
+        .code-card[data-state="ready"]  .cta-primary { display: none; }
+
+        /* ============================================================ CTA */
+        .cta-primary {
+            display: block;
+            width: 100%;
+            background: var(--ink);
+            color: var(--bg-top);
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 16px 24px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.005em;
+        }
+
+        .cta-primary:active { transform: scale(0.987); opacity: 0.92; }
+        .cta-primary[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+        .cta-secondary {
+            display: block;
+            width: 100%;
+            background: var(--surface);
+            color: var(--ink);
+            border: 1px solid var(--hairline-bold);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13.5px;
+            font-weight: 500;
+            padding: 14px 20px;
+            border-radius: 999px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.18s ease;
+            letter-spacing: -0.005em;
+        }
+
+        .cta-secondary:active { transform: scale(0.987); }
+
+        /* ============================================================ SHARE */
+        .share-card {
+            background: var(--surface-soft);
+            border: 1px solid var(--hairline);
+            border-radius: 20px;
+            padding: 22px;
+            text-align: left;
+        }
+
+        .share-headline {
+            font-weight: 700;
+            font-size: 19px;
+            line-height: 1.25;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .share-text {
+            font-size: 13.5px;
+            color: var(--ink-body);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        /* ============================================================ FAQ */
+        .faq-list { margin-top: 28px; }
+        .faq-item { border-bottom: 1px solid var(--hairline); }
+        .faq-item:first-child { border-top: 1px solid var(--hairline); }
+
+        .faq-q {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 20px 4px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15.5px;
+            font-weight: 500;
+            color: var(--ink);
+            -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .faq-toggle {
+            font-weight: 400;
+            font-size: 22px;
+            color: var(--muted);
+            transition: transform 0.25s ease;
+            width: 20px;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .faq-item[data-open="true"] .faq-toggle { transform: rotate(45deg); }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.32s ease, padding 0.32s ease;
+            font-size: 14px;
+            color: var(--ink-body);
+            line-height: 1.65;
+            padding: 0 4px;
+        }
+
+        .faq-item[data-open="true"] .faq-a {
+            max-height: 360px;
+            padding: 0 4px 20px;
+        }
+
+        /* ============================================================ SUPPORT */
+        .support-card {
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            border-radius: 22px;
+            padding: 24px 22px;
+            margin: 26px 0 14px;
+            box-shadow: 0 1px 0 var(--soft), 0 14px 32px -22px var(--shadow);
+        }
+
+        .support-card-title {
+            font-weight: 700;
+            font-size: 22px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .support-card-text {
+            font-size: 14px;
+            color: var(--ink-body);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* ============================================================ SKELETON */
+        .skeleton {
+            background: linear-gradient(90deg,
+                rgba(28,26,23,0.04) 0%,
+                rgba(28,26,23,0.08) 50%,
+                rgba(28,26,23,0.04) 100%);
+            background-size: 200% 100%;
+            animation: skel 1.4s ease-in-out infinite;
+            border-radius: 8px;
+            height: 1em;
+        }
+        @keyframes skel {
+            from { background-position: 200% 0; }
+            to   { background-position: -200% 0; }
+        }
+
+        /* ============================================================ REVEAL */
         .reveal {
             opacity: 0;
             transform: translateY(6px);
-            animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+            animation: reveal 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
         }
         .reveal-1 { animation-delay: 0.05s; }
         .reveal-2 { animation-delay: 0.15s; }
-        .reveal-3 { animation-delay: 0.30s; }
+        .reveal-3 { animation-delay: 0.28s; }
         .reveal-4 { animation-delay: 0.40s; }
         .reveal-5 { animation-delay: 0.50s; }
+        .reveal-6 { animation-delay: 0.60s; }
 
-        @keyframes reveal {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
 
         @media (prefers-reduced-motion: reduce) {
-            .reveal { animation: none; opacity: 1; transform: none; }
+            .reveal, .screen, .skeleton {
+                animation: none !important;
+                opacity: 1;
+                transform: none;
+            }
         }
 
-        /* ---------------- Toast ---------------- */
+        /* ============================================================ TOAST */
         .toast {
             position: fixed;
-            left: 16px;
-            right: 16px;
+            left: 20px;
+            right: 20px;
             bottom: 24px;
             background: var(--ink);
             color: var(--bg-top);
-            padding: 13px 18px;
-            border-radius: 14px;
-            font-size: 13.5px;
-            line-height: 1.4;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            line-height: 1.45;
             text-align: center;
+            letter-spacing: -0.005em;
             opacity: 0;
             transform: translateY(20px);
             pointer-events: none;
@@ -332,154 +733,623 @@
 </head>
 <body>
 
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-eyebrow reveal reveal-1">
-            Aurora <span class="dot"></span> Private access
-        </div>
-        <h1 class="hero-title reveal reveal-2">
-            Aurora<span class="mark">✦</span>
-        </h1>
-        <p class="hero-tagline reveal reveal-2">— ваш ключ к свободному интернету —</p>
-    </section>
+    <header class="brand-strip">
+        <span class="wordmark">aurora<span class="ornament">·</span>vpn</span>
+        <span id="brand-strip-time">--:--</span>
+    </header>
 
-    <!-- STAT CHIPS -->
-    <div class="chips reveal reveal-3">
-        <button class="chip" type="button" data-action="info">
-            <span class="chip-glyph">◇</span>
-            <span class="chip-text">Доступ</span>
-        </button>
-        <button class="chip" type="button" data-action="cooldown">
-            <span class="chip-glyph">⌛</span>
-            <span class="chip-text">24ч</span>
-        </button>
-        <button class="chip" type="button" data-action="share">
-            <span class="chip-glyph">↗</span>
-            <span class="chip-text">Реф</span>
-        </button>
-        <button class="chip" type="button" data-action="faq">
-            <span class="chip-glyph">?</span>
-            <span class="chip-text">FAQ</span>
-        </button>
+    <div class="app" id="app">
+
+        <!-- ==================== SCREEN: HOME ==================== -->
+        <section class="screen" data-screen="home">
+            <div class="hero">
+                <div class="hero-eyebrow reveal reveal-1">
+                    <span class="dot"></span>приватный доступ
+                </div>
+                <h1 class="hero-title reveal reveal-2" id="hero-greeting">добрый день</h1>
+                <p class="hero-name reveal reveal-2" id="hero-name">ваш ключ к свободному интернету</p>
+            </div>
+
+            <div class="chips reveal reveal-3">
+                <button class="chip" type="button" data-action="show-info">
+                    <span class="chip-glyph">i</span><span>aurora · free</span>
+                </button>
+                <button class="chip" type="button" data-action="goto-faq">
+                    <span class="chip-glyph">?</span><span>faq</span>
+                </button>
+                <button class="chip" type="button" data-action="share-bot">
+                    <span class="chip-glyph">↗</span><span>поделиться</span>
+                </button>
+                <button class="chip" type="button" data-action="goto-support">
+                    <span class="chip-glyph">✉</span><span>поддержка</span>
+                </button>
+            </div>
+
+            <div class="cards">
+                <!-- TIER 01 — FREE (active) -->
+                <button class="card reveal reveal-4" type="button" data-action="goto-access">
+                    <span class="card-tier-mark">·01·</span>
+                    <div class="card-icon primary">f</div>
+                    <div class="card-body">
+                        <div class="card-title">aurora free</div>
+                        <div class="card-subtitle">бесплатный ключ · бессрочно</div>
+                    </div>
+                    <span class="card-arrow">›</span>
+                </button>
+
+                <!-- TIER 02 — PRO (coming soon) -->
+                <button class="card reveal reveal-4" type="button" disabled>
+                    <span class="card-tier-mark">·02·</span>
+                    <div class="card-icon outlined">p</div>
+                    <div class="card-body">
+                        <div class="card-title">aurora pro</div>
+                        <div class="card-subtitle">премиум-подписка</div>
+                    </div>
+                    <span class="card-badge">скоро</span>
+                </button>
+
+                <!-- TIER 03 — ATLAS (coming soon) -->
+                <button class="card reveal reveal-5" type="button" disabled>
+                    <span class="card-tier-mark">·03·</span>
+                    <div class="card-icon outlined">a</div>
+                    <div class="card-body">
+                        <div class="card-title">aurora atlas</div>
+                        <div class="card-subtitle">расширенный доступ</div>
+                    </div>
+                    <span class="card-badge">скоро</span>
+                </button>
+            </div>
+
+            <div class="utility reveal reveal-6">
+                <button class="util-btn" type="button" data-action="goto-faq">faq</button>
+                <button class="util-btn" type="button" data-action="channel">канал</button>
+                <button class="util-btn" type="button" data-action="goto-support">чат</button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN: ACCESS (FREE tier) ==================== -->
+        <section class="screen" data-screen="access" hidden>
+            <div class="screen-header">
+                <span class="screen-tier">·01·  free</span>
+                <h2 class="screen-title">aurora free</h2>
+                <p class="screen-subtitle">бесплатный ключ доступа. действует бессрочно — без таймеров и продлений.</p>
+            </div>
+
+            <div class="info-tiles">
+                <button class="info-tile" type="button" data-action="show-info-howto">
+                    <span class="info-tile-step">шаг 01</span>
+                    <span class="info-tile-label">как получить</span>
+                </button>
+                <button class="info-tile" type="button" data-action="show-info-use">
+                    <span class="info-tile-step">шаг 02</span>
+                    <span class="info-tile-label">куда вставить</span>
+                </button>
+                <button class="info-tile" type="button" data-action="show-info-security">
+                    <span class="info-tile-step">шаг 03</span>
+                    <span class="info-tile-label">приватность</span>
+                </button>
+            </div>
+
+            <p class="section-label">ваш ключ</p>
+            <div class="code-card" id="code-card" data-state="loading">
+                <div class="code-status">
+                    <span class="dot"></span>
+                    <span id="code-status-label">загружаем…</span>
+                </div>
+                <div class="code-card-headline" id="code-headline">
+                    <span class="skeleton" style="display:inline-block; width:60%; height:26px;"></span>
+                </div>
+                <p class="code-card-help" id="code-help">
+                    <span class="skeleton" style="display:inline-block; width:80%; height:14px;"></span>
+                </p>
+
+                <div class="code-ticket" id="code-ticket" data-action="copy-code">
+                    <div class="code-ticket-value" id="code-ticket-value">—</div>
+                    <div class="code-ticket-hint">нажмите чтобы скопировать</div>
+                </div>
+
+                <div class="code-card-meta" id="code-meta" hidden></div>
+
+                <button class="cta-primary" type="button" data-action="get-code" id="get-code-btn">
+                    получить ключ
+                </button>
+            </div>
+
+            <p class="section-label">поделиться</p>
+            <div class="share-card">
+                <div class="share-headline">расскажите о aurora</div>
+                <p class="share-text">поделитесь ботом с тем, кому нужен спокойный доступ к интернету.</p>
+                <button class="cta-secondary" type="button" data-action="share-bot">скопировать ссылку</button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN: FAQ ==================== -->
+        <section class="screen" data-screen="faq" hidden>
+            <div class="screen-header">
+                <h2 class="screen-title">вопросы</h2>
+                <p class="screen-subtitle">короткие ответы на самое частое.</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>что такое aurora?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">сервис персональных ключей доступа к vpn. один ключ активирует ваш vpn-клиент.</div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>сколько действует ключ?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">бессрочно. один раз получили — пользуетесь навсегда. без продлений и таймеров.</div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>куда вставить ключ?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">в ваш vpn-клиент — поле «ключ» или «лицензия». после активации соединение поднимется автоматически.</div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>это безопасно?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">aurora не хранит ваш трафик, ip-адрес и логи. ключ привязан только к вашему telegram-аккаунту.</div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>что такое pro и atlas?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">расширенные тарифы откроются позже. они добавят приоритет, больше серверов и дополнительные возможности.</div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" type="button" data-faq-toggle>
+                        <span>где взять помощь?</span><span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-a">откройте экран «поддержка» и напишите администратору. обычно ответ приходит в течение суток.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN: SUPPORT ==================== -->
+        <section class="screen" data-screen="support" hidden>
+            <div class="screen-header">
+                <h2 class="screen-title">поддержка</h2>
+                <p class="screen-subtitle">опишите ситуацию — администратор ответит лично.</p>
+            </div>
+
+            <div class="support-card">
+                <div class="support-card-title">напишите нам</div>
+                <p class="support-card-text">
+                    закройте приложение и отправьте сообщение прямо в чат с ботом. все обращения видит администратор aurora.
+                </p>
+                <button class="cta-primary" type="button" data-action="goto-chat-support">открыть чат</button>
+            </div>
+
+            <div class="support-card">
+                <div class="support-card-title">частые вопросы</div>
+                <p class="support-card-text">
+                    прежде чем писать — загляните в раздел вопросов. возможно, ответ уже там.
+                </p>
+                <button class="cta-secondary" type="button" data-action="goto-faq">открыть вопросы</button>
+            </div>
+        </section>
+
     </div>
 
-    <!-- SERVICE CARDS -->
-    <div class="cards">
-        <button class="card reveal reveal-4" type="button" data-action="get_code">
-            <div class="card-icon primary">A</div>
-            <div class="card-body">
-                <div class="card-title">Aurora Access</div>
-                <div class="card-subtitle">Получить персональный код</div>
-            </div>
-            <span class="card-arrow">›</span>
-        </button>
-
-        <button class="card reveal reveal-4" type="button" disabled>
-            <div class="card-icon locked">P</div>
-            <div class="card-body">
-                <div class="card-title">Aurora Pro</div>
-                <div class="card-subtitle">Премиум-доступ и приоритет</div>
-            </div>
-            <span class="card-badge">Скоро</span>
-        </button>
-
-        <button class="card reveal reveal-5" type="button" disabled>
-            <div class="card-icon locked">N</div>
-            <div class="card-body">
-                <div class="card-title">Aurora Atlas</div>
-                <div class="card-subtitle">Карта стран и серверов</div>
-            </div>
-            <span class="card-badge">Скоро</span>
-        </button>
-    </div>
-
-    <!-- UTILITY ROW -->
-    <div class="utility reveal reveal-5">
-        <button class="util-btn" type="button" data-action="faq">FAQ</button>
-        <button class="util-btn" type="button" data-action="channel">Канал</button>
-        <button class="util-btn" type="button" data-action="support">Чат</button>
-    </div>
-
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
     <script>
-        /*
-         * Bridge between WebApp UI and the Telegram bot.
-         * Uses tg.openTelegramLink('t.me/bot?start=PARAM') to reliably trigger
-         * bot actions, bypassing the sendData issue on some iOS clients.
-         */
+    /* ================================================================
+       aurora — webapp logic
+       ================================================================ */
 
-        const BOT_USERNAME = 'aurora_vpn_access_bot';
+    /*  ==== CONFIGURATION ============================================
+        IMPORTANT: replace API_BASE with the URL Render gives you after
+        deploying bot.py. Example: https://aurora-vpn-bot.onrender.com
+        No trailing slash, no /api on the end.
+        ============================================================== */
+    const API_BASE = 'https://CHANGE-ME.onrender.com';
+    const BOT_USERNAME = 'aurora_vpn_access_bot';
 
-        const tg = window.Telegram && window.Telegram.WebApp;
-        const toastEl = document.getElementById('toast');
-        let toastTimer = null;
+    /* ================================================================ */
 
-        function showToast(text, durationMs) {
-            toastEl.textContent = text;
-            toastEl.classList.add('visible');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(function () {
-                toastEl.classList.remove('visible');
-            }, durationMs || 2400);
-        }
+    const tg = window.Telegram && window.Telegram.WebApp;
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
 
-        if (tg) {
-            try { tg.ready(); } catch (_) {}
-            try { tg.expand(); } catch (_) {}
-            try { tg.setHeaderColor('#F1E8DB'); } catch (_) {}
-            try { tg.setBackgroundColor('#F1E8DB'); } catch (_) {}
-        }
+    /* ----- Telegram SDK init -------------------------------------- */
+    if (tg) {
+        try { tg.ready(); } catch (_) {}
+        try { tg.expand(); } catch (_) {}
+        try { tg.setHeaderColor('#F4EFE7'); } catch (_) {}
+        try { tg.setBackgroundColor('#F4EFE7'); } catch (_) {}
+        try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (_) {}
+    }
 
-        function openBotWithParam(startParam) {
-            const url = 'https://t.me/' + BOT_USERNAME + '?start=' + encodeURIComponent(startParam);
-            if (tg && typeof tg.openTelegramLink === 'function') {
-                tg.openTelegramLink(url);
+    function haptic(kind) {
+        if (!tg || !tg.HapticFeedback) return;
+        try {
+            if (kind === 'success' || kind === 'error' || kind === 'warning') {
+                tg.HapticFeedback.notificationOccurred(kind);
             } else {
-                window.open(url, '_blank');
+                tg.HapticFeedback.impactOccurred(kind || 'light');
+            }
+        } catch (_) {}
+    }
+
+    /* ----- Greeting + clock --------------------------------------- */
+    function applyTimeGreeting() {
+        const now = new Date();
+        const h = now.getHours();
+        let phrase;
+        if (h >= 5 && h < 12)        phrase = 'доброе утро';
+        else if (h >= 12 && h < 18)   phrase = 'добрый день';
+        else if (h >= 18 && h < 23)   phrase = 'добрый вечер';
+        else                           phrase = 'доброй ночи';
+
+        const greetingEl = document.getElementById('hero-greeting');
+        if (greetingEl) greetingEl.textContent = phrase;
+
+        const timeEl = document.getElementById('brand-strip-time');
+        if (timeEl) {
+            const hh = String(h).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            timeEl.textContent = hh + ':' + mm;
+        }
+    }
+
+    function applyUserName(firstName) {
+        const el = document.getElementById('hero-name');
+        if (!el) return;
+        if (firstName) {
+            el.innerHTML = 'добро пожаловать, <b>' + escapeHtml(firstName.toLowerCase()) + '</b>.';
+        } else {
+            el.textContent = 'ваш ключ к свободному интернету.';
+        }
+    }
+
+    function escapeHtml(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /* ----- Toast --------------------------------------------------- */
+    function showToast(text, durationMs) {
+        toastEl.textContent = text;
+        toastEl.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+            toastEl.classList.remove('visible');
+        }, durationMs || 2600);
+    }
+
+    /* ================================================================
+       SCREEN NAVIGATION
+       ================================================================ */
+    const screens = document.querySelectorAll('.screen');
+    const navStack = ['home'];
+
+    function showScreen(name) {
+        screens.forEach(function (s) {
+            s.hidden = (s.getAttribute('data-screen') !== name);
+        });
+        window.scrollTo(0, 0);
+
+        if (tg && tg.BackButton) {
+            if (name === 'home') {
+                try { tg.BackButton.hide(); } catch (_) {}
+            } else {
+                try { tg.BackButton.show(); } catch (_) {}
             }
         }
 
-        const actions = {
-            get_code: function () {
-                if (tg && typeof tg.sendData === 'function') {
-                    try { tg.sendData(JSON.stringify({ action: 'request_code' })); } catch (_) {}
-                }
-                openBotWithParam('code');
-            },
-            info: function () {
-                showToast('Один уникальный код на каждого пользователя.');
-            },
-            cooldown: function () {
-                showToast('Один код раз в 24 часа.');
-            },
-            share: function () {
-                const link = 'https://t.me/' + BOT_USERNAME;
-                if (tg && typeof tg.openTelegramLink === 'function') {
-                    tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link));
-                } else {
-                    showToast('t.me/' + BOT_USERNAME);
-                }
-            },
-            faq: function () {
-                openBotWithParam('faq');
-            },
-            channel: function () {
-                showToast('Канал скоро будет.');
-            },
-            support: function () {
-                openBotWithParam('support');
-            }
-        };
+        // Re-fetch status whenever entering the access screen.
+        if (name === 'access') refreshStatus();
+    }
 
-        document.querySelectorAll('[data-action]').forEach(function (el) {
-            el.addEventListener('click', function () {
-                const action = el.getAttribute('data-action');
-                const fn = actions[action];
-                if (fn) fn();
+    function navigateTo(name) {
+        if (navStack[navStack.length - 1] === name) return;
+        navStack.push(name);
+        showScreen(name);
+    }
+
+    function navigateBack() {
+        if (navStack.length <= 1) {
+            if (tg) { try { tg.close(); } catch (_) {} }
+            return;
+        }
+        navStack.pop();
+        showScreen(navStack[navStack.length - 1]);
+    }
+
+    if (tg && tg.BackButton) {
+        try { tg.BackButton.onClick(navigateBack); } catch (_) {}
+    }
+
+    /* ================================================================
+       API CLIENT
+       ================================================================ */
+    function authHeader() {
+        const initData = (tg && tg.initData) || '';
+        return { 'Authorization': 'tma ' + initData };
+    }
+
+    async function apiCall(method, path, body) {
+        const url = API_BASE.replace(/\/$/, '') + path;
+        const headers = Object.assign(
+            { 'Content-Type': 'application/json' },
+            authHeader()
+        );
+        const init = { method: method, headers: headers };
+        if (body !== undefined) init.body = JSON.stringify(body);
+
+        let response;
+        try {
+            response = await fetch(url, init);
+        } catch (err) {
+            throw { kind: 'network', message: 'не удалось связаться с сервером' };
+        }
+
+        let data = null;
+        try { data = await response.json(); } catch (_) {}
+
+        if (!response.ok) {
+            throw {
+                kind: (data && data.error) || 'http_' + response.status,
+                status: response.status,
+                data: data,
+            };
+        }
+        return data;
+    }
+
+    /* ================================================================
+       CODE CARD STATE MACHINE
+         loading  →  fetching status (skeleton)
+         idle     →  no key yet, show CTA
+         active   →  user already has their forever-key, display it
+         ready    →  just received a key now (transitional "celebration" state)
+         empty    →  pool exhausted, show retry
+         error    →  network or auth error
+       ================================================================ */
+
+    function renderCodeCard(state, payload) {
+        const card    = document.getElementById('code-card');
+        const status  = document.getElementById('code-status-label');
+        const head    = document.getElementById('code-headline');
+        const help    = document.getElementById('code-help');
+        const ticket  = document.getElementById('code-ticket-value');
+        const meta    = document.getElementById('code-meta');
+        const cta     = document.getElementById('get-code-btn');
+
+        card.setAttribute('data-state', state);
+        cta.disabled = false;
+        meta.hidden = true;
+
+        switch (state) {
+            case 'loading':
+                status.textContent = 'загружаем…';
+                head.innerHTML = '<span class="skeleton" style="display:inline-block; width:60%; height:26px;"></span>';
+                help.innerHTML = '<span class="skeleton" style="display:inline-block; width:80%; height:14px;"></span>';
+                ticket.textContent = '—';
+                cta.textContent = 'получить ключ';
+                cta.disabled = true;
+                break;
+
+            case 'idle':
+                status.textContent = 'ожидает получения';
+                head.textContent = 'один ключ. навсегда.';
+                help.textContent = 'нажмите кнопку — ваш персональный ключ появится прямо здесь.';
+                cta.textContent = 'получить ключ';
+                break;
+
+            case 'active':
+                status.textContent = 'активен · бессрочно';
+                head.textContent = 'ваш ключ';
+                help.textContent = 'это ваш персональный ключ. он работает без сроков и продлений.';
+                ticket.textContent = payload.code || '—';
+                break;
+
+            case 'ready':
+                status.textContent = 'готов';
+                head.textContent = 'ваш ключ готов';
+                help.textContent = 'скопируйте и активируйте в вашем приложении vpn.';
+                ticket.textContent = payload.code || '—';
+                meta.hidden = false;
+                meta.textContent = 'этот ключ — ваш навсегда. сохраните его в надёжном месте.';
+                break;
+
+            case 'empty':
+                status.textContent = 'нет свободных';
+                head.textContent = 'ключей сейчас нет.';
+                help.textContent = 'администратор скоро пополнит запас. загляните чуть позже.';
+                cta.textContent = 'попробовать снова';
+                break;
+
+            case 'error':
+                status.textContent = 'нет связи';
+                head.textContent = 'не удалось загрузить.';
+                help.textContent = (payload && payload.message)
+                    ? payload.message
+                    : 'проверьте интернет и попробуйте ещё раз.';
+                cta.textContent = 'повторить';
+                break;
+        }
+    }
+
+    /* ----- Fetch status ------------------------------------------- */
+    async function refreshStatus() {
+        renderCodeCard('loading');
+        try {
+            const data = await apiCall('GET', '/api/status');
+            applyUserName(data.first_name);
+
+            if (data.last_code) {
+                renderCodeCard('active', { code: data.last_code });
+            } else if (data.pool_available === 0) {
+                renderCodeCard('empty');
+            } else {
+                renderCodeCard('idle');
+            }
+        } catch (err) {
+            console.error('status error', err);
+            renderCodeCard('error', {
+                message: err.kind === 'network'
+                    ? 'нет связи с сервером.'
+                    : 'ошибка авторизации. перезапустите приложение.',
             });
+        }
+    }
+
+    /* ----- Issue a key -------------------------------------------- */
+    let issueInFlight = false;
+
+    async function issueCode() {
+        if (issueInFlight) return;
+        const cta = document.getElementById('get-code-btn');
+        const card = document.getElementById('code-card');
+        const currentState = card.getAttribute('data-state');
+
+        // Empty / error states: just retry the status fetch.
+        if (currentState === 'error' || currentState === 'empty') {
+            await refreshStatus();
+            return;
+        }
+
+        issueInFlight = true;
+        cta.disabled = true;
+        cta.textContent = 'выдаём…';
+
+        try {
+            const data = await apiCall('POST', '/api/issue-code', {});
+            haptic('success');
+            renderCodeCard('ready', { code: data.code });
+        } catch (err) {
+            console.error('issue error', err);
+
+            if (err.kind === 'already_issued') {
+                // User already has their forever-key. Show it.
+                haptic('warning');
+                renderCodeCard('active', { code: err.data.code });
+                showToast('у вас уже есть ваш ключ.');
+            } else if (err.kind === 'no_codes_available') {
+                haptic('error');
+                renderCodeCard('empty');
+            } else if (err.kind === 'unauthorized') {
+                haptic('error');
+                showToast('ошибка авторизации. перезапустите приложение.');
+                renderCodeCard('error', { message: 'ошибка авторизации.' });
+            } else {
+                haptic('error');
+                showToast('что-то пошло не так. попробуйте позже.');
+                renderCodeCard('error', { message: 'ошибка соединения.' });
+            }
+        } finally {
+            issueInFlight = false;
+        }
+    }
+
+    /* ----- Copy key on tap ---------------------------------------- */
+    async function copyCode() {
+        const code = document.getElementById('code-ticket-value').textContent.trim();
+        if (!code || code === '—') return;
+
+        try {
+            await navigator.clipboard.writeText(code);
+            haptic('success');
+            showToast('ключ скопирован.');
+        } catch (_) {
+            const el = document.getElementById('code-ticket-value');
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            showToast('выделено — скопируйте вручную.');
+        }
+    }
+
+    /* ================================================================
+       ACTION ROUTER
+       ================================================================ */
+    function openBotLink(extraPath) {
+        const url = 'https://t.me/' + BOT_USERNAME + (extraPath || '');
+        if (tg && typeof tg.openTelegramLink === 'function') {
+            tg.openTelegramLink(url);
+        } else {
+            window.open(url, '_blank');
+        }
+    }
+
+    const actions = {
+        'goto-access':  function () { haptic('light'); navigateTo('access'); },
+        'goto-faq':     function () { haptic('light'); navigateTo('faq'); },
+        'goto-support': function () { haptic('light'); navigateTo('support'); },
+
+        'show-info':           function () { showToast('aurora · бесплатный ключ навсегда.'); },
+        'show-info-howto':     function () { showToast('откройте aurora free и нажмите «получить ключ».', 3200); },
+        'show-info-use':       function () { showToast('вставьте ключ в поле «ключ» вашего vpn-клиента.', 3200); },
+        'show-info-security':  function () { showToast('aurora не хранит трафик, ip и логи.', 3200); },
+
+        'get-code':  function () { haptic('light'); issueCode(); },
+        'copy-code': copyCode,
+
+        'share-bot': function () {
+            const link = 'https://t.me/' + BOT_USERNAME;
+            if (tg && typeof tg.openTelegramLink === 'function') {
+                tg.openTelegramLink(
+                    'https://t.me/share/url?url=' + encodeURIComponent(link)
+                    + '&text=' + encodeURIComponent('aurora — спокойный доступ к свободному интернету.')
+                );
+            } else {
+                showToast('t.me/' + BOT_USERNAME);
+            }
+        },
+
+        'channel':           function () { showToast('канал скоро появится.'); },
+        'goto-chat-support': function () { openBotLink(''); }
+    };
+
+    document.querySelectorAll('[data-action]').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const action = el.getAttribute('data-action');
+            const fn = actions[action];
+            if (fn) fn();
         });
+    });
+
+    /* FAQ accordion */
+    document.querySelectorAll('[data-faq-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const item = btn.closest('.faq-item');
+            if (!item) return;
+            const isOpen = item.getAttribute('data-open') === 'true';
+            document.querySelectorAll('.faq-item[data-open="true"]').forEach(function (other) {
+                if (other !== item) other.removeAttribute('data-open');
+            });
+            if (isOpen) item.removeAttribute('data-open');
+            else        item.setAttribute('data-open', 'true');
+        });
+    });
+
+    /* ================================================================
+       BOOT
+       ================================================================ */
+    applyTimeGreeting();
+    applyUserName('');
+    showScreen('home');
+    setInterval(applyTimeGreeting, 60 * 1000);
+
+    // Warm up the status endpoint so it's ready when the user opens access.
+    refreshStatus();
     </script>
 </body>
 </html>
